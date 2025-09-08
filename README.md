@@ -21,5 +21,5 @@ It also highlights BMI categories with color-coded results and provides helpful 
 ![Screenshot_8-9-2025_8710_](https://github.com/user-attachments/assets/a0cccc17-0076-4965-8adf-099da772e7e0)
 ## 🚀 How to Use
 1. Clone or download the repository:
-   ```bash
-  https://github.com/rammahato-dot/BMI_Calculator.git
+   ```bash https://github.com/rammahato-dot/BMI_Calculator.git
+  
