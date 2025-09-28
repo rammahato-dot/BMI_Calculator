@@ -2,88 +2,179 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BMI Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wellness Metrics Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="container">
-    <h1>BMI Calculator</h1>
+  <header class="app-header">
+    <div>
+      <h1>Wellness Metrics Dashboard</h1>
+      <p>Your friendly corner for BMI, BMR, and body composition insights.</p>
+    </div>
+    <button id="settings-toggle" class="icon-button" aria-expanded="false" aria-controls="settings-panel">
+      ⚙️ <span class="sr-only">Toggle settings</span>
+    </button>
+  </header>
 
-    <form id="bmi-form" novalidate>
-      <fieldset class="unit-toggle">
-        <legend>Measurement system</legend>
-        <label>
-          <input type="radio" name="unit" value="metric" checked>
-          Metric (cm, kg)
-        </label>
-        <label>
-          <input type="radio" name="unit" value="imperial">
-          Imperial (ft/in, lbs)
-        </label>
-      </fieldset>
+  <aside id="settings-panel" class="settings hidden" role="region" aria-live="polite">
+    <h2>Settings</h2>
+    <label class="toggle">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span>Dark mode</span>
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="tips-toggle" checked>
+      <span>Show wellness tips</span>
+    </label>
+  </aside>
 
-      <div class="inputs-wrapper">
-        <div class="input-group" data-unit="metric">
-          <label for="height-cm">Height (cm)</label>
-          <input type="number" id="height-cm" min="50" max="260" step="0.1" placeholder="e.g., 172.5">
-        </div>
+  <main class="layout">
+    <section class="card card-form">
+      <nav class="tablist" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="bmi-panel" id="tab-bmi" class="tab">BMI</button>
+        <button role="tab" aria-selected="false" aria-controls="bmr-panel" id="tab-bmr" class="tab">BMR</button>
+      </nav>
 
-        <div class="input-group hidden" data-unit="imperial">
-          <label>Height (ft / in)</label>
-          <div class="imperial-height">
-            <input type="number" id="height-ft" min="1" max="8" step="1" placeholder="ft">
-            <input type="number" id="height-in" min="0" max="11.9" step="0.1" placeholder="in">
+      <form id="metric-form" novalidate>
+        <div id="bmi-panel" role="tabpanel" aria-labelledby="tab-bmi">
+          <fieldset class="unit-selector">
+            <legend>Measurement system</legend>
+            <label><input type="radio" name="unit" value="metric" checked> Metric</label>
+            <label><input type="radio" name="unit" value="imperial"> Imperial</label>
+          </fieldset>
+
+          <div class="grid">
+            <div class="input-group" data-unit="metric">
+              <label for="metric-height">Height (cm)</label>
+              <input type="number" id="metric-height" min="50" max="260" step="0.1" required>
+              <small class="hint">50–260 cm</small>
+            </div>
+
+            <div class="input-group hidden" data-unit="imperial">
+              <label for="height-ft">Height (ft / in)</label>
+              <div class="dual">
+                <input type="number" id="height-ft" min="1" max="8" step="1" placeholder="ft">
+                <input type="number" id="height-in" min="0" max="11.9" step="0.1" placeholder="in">
+              </div>
+              <small class="hint">Inches 0–11.9</small>
+            </div>
+
+            <div class="input-group" data-unit="metric">
+              <label for="metric-weight">Weight (kg)</label>
+              <input type="number" id="metric-weight" min="10" max="400" step="0.1" required>
+              <small class="hint">10–400 kg</small>
+            </div>
+
+            <div class="input-group hidden" data-unit="imperial">
+              <label for="weight-lbs">Weight (lbs)</label>
+              <input type="number" id="weight-lbs" min="20" max="880" step="0.1">
+              <small class="hint">20–880 lbs</small>
+            </div>
+
+            <div class="input-group">
+              <label for="age">Age (years)</label>
+              <input type="number" id="age" min="10" max="120" required>
+            </div>
+
+            <div class="input-group">
+              <label>Sex</label>
+              <div class="chip-group" role="radiogroup">
+                <label><input type="radio" name="sex" value="female" checked> Female</label>
+                <label><input type="radio" name="sex" value="male"> Male</label>
+              </div>
+            </div>
+          </div>
+
+          <details class="optional">
+            <summary>Body composition (optional)</summary>
+            <p>Provide waist, neck, and hip (if female) measurements for a body fat estimate.</p>
+            <div class="grid">
+              <div class="input-group">
+                <label for="waist">Waist (cm)</label>
+                <input type="number" id="waist" min="40" max="200" step="0.1">
+              </div>
+              <div class="input-group">
+                <label for="neck">Neck (cm)</label>
+                <input type="number" id="neck" min="20" max="80" step="0.1">
+              </div>
+              <div class="input-group">
+                <label for="hip">Hip (cm)</label>
+                <input type="number" id="hip" min="50" max="180" step="0.1">
+                <small class="hint">Required for body fat if female</small>
+              </div>
+            </div>
+          </details>
+
+          <div class="actions">
+            <button type="submit" id="calculate-bmi">Calculate</button>
+            <button type="button" id="reset-form" class="secondary">Reset</button>
           </div>
         </div>
 
-        <div class="input-group" data-unit="metric">
-          <label for="weight-kg">Weight (kg)</label>
-          <input type="number" id="weight-kg" min="10" max="300" step="0.1" placeholder="e.g., 68.4">
+        <div id="bmr-panel" role="tabpanel" aria-labelledby="tab-bmr" hidden>
+          <p class="info">BMR estimates how many calories you burn at rest. Combine it with your activity level for daily needs.</p>
+
+          <div class="grid">
+            <div class="input-group">
+              <label for="bmr-age">Age (years)</label>
+              <input type="number" id="bmr-age" min="10" max="120" required>
+            </div>
+            <div class="input-group">
+              <label for="bmr-height">Height (cm)</label>
+              <input type="number" id="bmr-height" min="50" max="260" step="0.1" required>
+            </div>
+            <div class="input-group">
+              <label for="bmr-weight">Weight (kg)</label>
+              <input type="number" id="bmr-weight" min="10" max="400" step="0.1" required>
+            </div>
+            <div class="input-group">
+              <label>Sex</label>
+              <div class="chip-group" role="radiogroup">
+                <label><input type="radio" name="bmr-sex" value="female" checked> Female</label>
+                <label><input type="radio" name="bmr-sex" value="male"> Male</label>
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="activity-level">Activity level</label>
+              <select id="activity-level">
+                <option value="1.2">Sedentary</option>
+                <option value="1.375">Light (1–3 workouts/week)</option>
+                <option value="1.55">Moderate (3–5 workouts/week)</option>
+                <option value="1.725">Active (6–7 workouts/week)</option>
+                <option value="1.9">Very active (physically intense job)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="calculate-bmr">Compute BMR</button>
+          </div>
         </div>
+      </form>
+    </section>
 
-        <div class="input-group hidden" data-unit="imperial">
-          <label for="weight-lbs">Weight (lbs)</label>
-          <input type="number" id="weight-lbs" min="20" max="660" step="0.1" placeholder="e.g., 150.5">
-        </div>
+    <section class="card" aria-live="polite">
+      <header class="card-header">
+        <h2 id="result-title">Your Insights</h2>
+        <button id="clear-history" class="link" type="button">Clear history</button>
+      </header>
+      <div id="result-area">
+        <p class="placeholder">Calculate something to see your personalized breakdown 🌱</p>
       </div>
+    </section>
 
-      <p class="hint">
-        \( \text{BMI} = \frac{\text{Weight (kg)}}{\text{Height (m)}^2} \)
-      </p>
-
-      <div class="actions">
-        <button type="submit" id="btn">Calculate</button>
-        <button type="button" id="reset" class="secondary">Reset</button>
-      </div>
-    </form>
-
-    <section id="result" aria-live="polite"></section>
-
-    <section id="history" class="history hidden">
-      <h2>Recent BMI Checks</h2>
+    <aside class="card history" id="history-card">
+      <h2>Recent Records</h2>
       <ul id="history-list"></ul>
-      <button type="button" id="clear-history" class="link-button">Clear history</button>
-    </section>
-
-    <section id="info-panel">
-      <h2>Healthy Ranges</h2>
-      <table class="category-table">
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>BMI Range</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Underweight</td><td>Less than 18.5</td></tr>
-          <tr><td>Normal</td><td>18.5 to 24.9</td></tr>
-          <tr><td>Overweight</td><td>25.0 to 29.9</td></tr>
-          <tr><td>Obese</td><td>30.0 or higher</td></tr>
-        </tbody>
-      </table>
-    </section>
+    </aside>
   </main>
+
+  <footer class="footnote">
+    <p>Always consult a healthcare professional for medical guidance. This tool offers educational estimates.</p>
+  </footer>
+
+  <div class="sr-only" aria-live="assertive" id="announce"></div>
 
   <script src="script.js" defer></script>
 </body>
