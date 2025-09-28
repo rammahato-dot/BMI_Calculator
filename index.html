@@ -7,37 +7,84 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <main class="container">
     <h1>BMI Calculator</h1>
 
-    <div class="input-group">
-      <label for="height">Height</label>
-      <div class="input-with-select">
-        <input type="number" id="height" placeholder="Enter height">
-        <select id="height-unit">
-          <option value="cm">cm</option>
-          <option value="ft">feet</option>
-        </select>
+    <form id="bmi-form" novalidate>
+      <fieldset class="unit-toggle">
+        <legend>Measurement system</legend>
+        <label>
+          <input type="radio" name="unit" value="metric" checked>
+          Metric (cm, kg)
+        </label>
+        <label>
+          <input type="radio" name="unit" value="imperial">
+          Imperial (ft/in, lbs)
+        </label>
+      </fieldset>
+
+      <div class="inputs-wrapper">
+        <div class="input-group" data-unit="metric">
+          <label for="height-cm">Height (cm)</label>
+          <input type="number" id="height-cm" min="50" max="260" step="0.1" placeholder="e.g., 172.5">
+        </div>
+
+        <div class="input-group hidden" data-unit="imperial">
+          <label>Height (ft / in)</label>
+          <div class="imperial-height">
+            <input type="number" id="height-ft" min="1" max="8" step="1" placeholder="ft">
+            <input type="number" id="height-in" min="0" max="11.9" step="0.1" placeholder="in">
+          </div>
+        </div>
+
+        <div class="input-group" data-unit="metric">
+          <label for="weight-kg">Weight (kg)</label>
+          <input type="number" id="weight-kg" min="10" max="300" step="0.1" placeholder="e.g., 68.4">
+        </div>
+
+        <div class="input-group hidden" data-unit="imperial">
+          <label for="weight-lbs">Weight (lbs)</label>
+          <input type="number" id="weight-lbs" min="20" max="660" step="0.1" placeholder="e.g., 150.5">
+        </div>
       </div>
-    </div>
 
-    <div class="input-group">
-      <label for="weight">Weight</label>
-      <div class="input-with-select">
-        <input type="number" id="weight" placeholder="Enter weight">
-        <select id="weight-unit">
-          <option value="kg">kg</option>
-          <option value="lbs">lbs</option>
-        </select>
+      <p class="hint">
+        \( \text{BMI} = \frac{\text{Weight (kg)}}{\text{Height (m)}^2} \)
+      </p>
+
+      <div class="actions">
+        <button type="submit" id="btn">Calculate</button>
+        <button type="button" id="reset" class="secondary">Reset</button>
       </div>
-    </div>
+    </form>
 
-    <button id="btn">Calculate</button>
-    <button id="reset">Reset</button>
+    <section id="result" aria-live="polite"></section>
 
-    <div id="result"></div>
-  </div>
+    <section id="history" class="history hidden">
+      <h2>Recent BMI Checks</h2>
+      <ul id="history-list"></ul>
+      <button type="button" id="clear-history" class="link-button">Clear history</button>
+    </section>
 
-  <script src="script.js"></script>
+    <section id="info-panel">
+      <h2>Healthy Ranges</h2>
+      <table class="category-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>BMI Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Underweight</td><td>Less than 18.5</td></tr>
+          <tr><td>Normal</td><td>18.5 to 24.9</td></tr>
+          <tr><td>Overweight</td><td>25.0 to 29.9</td></tr>
+          <tr><td>Obese</td><td>30.0 or higher</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js" defer></script>
 </body>
 </html>
